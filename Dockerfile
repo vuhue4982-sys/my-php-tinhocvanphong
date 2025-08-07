@@ -19,4 +19,6 @@ RUN chown -R www-data:www-data /var/www/html
 # Mở cổng 80
 EXPOSE 80
 
+# ⚠️ Dòng này rất quan trọng cho Render:
+CMD ["apache2-foreground"]
 
