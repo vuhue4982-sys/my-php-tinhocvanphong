@@ -1,6 +1,6 @@
 FROM php:8.1-apache
 
-# Cài các gói hỗ trợ cần thiết để cài được extension PHP
+# Cài các extension cần thiết
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -10,15 +10,14 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && docker-php-ext-install mysqli pdo pdo_mysql
 
-# Copy mã nguồn vào thư mục web của Apache
+# Copy source code vào thư mục web
 COPY . /var/www/html/
 
-# Thay đổi quyền để Apache đọc được
+# Set quyền cho Apache đọc
 RUN chown -R www-data:www-data /var/www/html
 
 # Mở cổng 80
 EXPOSE 80
 
-# ⚠️ Dòng này rất quan trọng cho Render:
+# ✅ Lệnh này rất quan trọng để Apache khởi động
 CMD ["apache2-foreground"]
-
