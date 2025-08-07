@@ -1,6 +1,6 @@
 FROM php:8.1-apache
 
-# Cài các extension cần thiết
+# Cài đặt dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -8,16 +8,20 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install mysqli pdo pdo_mysql
+    && docker-php-ext-install mysqli pdo pdo_mysql gd
 
-# Copy source code vào thư mục web
+# Bật mod_rewrite (nếu dùng .htaccess)
+RUN a2enmod rewrite
+
+# Copy source code vào container
 COPY . /var/www/html/
 
-# Set quyền cho Apache đọc
-RUN chown -R www-data:www-data /var/www/html
+# Cấp quyền cho thư mục
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
 
-# Mở cổng 80
+# Mở port 80 (Apache mặc định chạy trên port 80)
 EXPOSE 80
 
-# ✅ Lệnh này rất quan trọng để Apache khởi động
-CMD ["apache2-foreground"]
+# Lệnh khởi động Apache (PHẢI GIỐNG NGUYÊN VĂN)
+CMD ["apache2ctl", "-D", "FOREGROUND"]
